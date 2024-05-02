@@ -50,7 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Container(height: 140),
           Column(children: [
             Text(
-              "Dementia Care",
+              "MemoryGuard",
               style: TextStyle(
                 color: const Color.fromARGB(255, 0, 0, 0),
                 fontSize: getRelativeScreenWidth(40),
@@ -120,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           } else if (e.code == 'email-already-in-use') {
                             // ignore: use_build_context_synchronously
                             snackBar(context,
-                                'An acccount already exists for this email!');
+                                'Incorrect Email or Password! ');
                           }
                         }
                       }

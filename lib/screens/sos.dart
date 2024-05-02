@@ -94,7 +94,7 @@ class _SosScreenState extends State<SosScreen> {
   Future<void> sendNotification() async {
 
      try {
-      snackBar(context, 'SoS Sent');
+      snackBar(context, 'SoS Alert is sent. Help will be Here Soon');
       await FirebaseFirestore.instance
           .collection('user')
           .doc(user?.uid)

@@ -6,6 +6,7 @@ import '../screens/map.dart';
 import '../screens/register.dart';
 import '../helper/enums.dart';
 import '../screens/view.dart';
+import '../screens/view_patients.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   final MenuState? selectedMenu;
@@ -93,6 +94,21 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                     onPressed: () => {
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) => const Map()))
+                    },
+                  )),
+              Transform.scale(
+                  scale: MenuState.view_patients == _selectedMenuState ? 1.5 : 1.3,
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/icons/User .svg",
+                      // ignore: deprecated_member_use
+                      color: MenuState.view_patients == _selectedMenuState
+                          ? ActiveIconColor
+                          : inActiveIconColor,
+                    ),
+                    onPressed: () => {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const PatientsScreen()))
                     },
                   )),
               Transform.scale(

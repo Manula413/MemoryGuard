@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dementia_care/screens/sign_in_screen.dart';
 import 'package:dementia_care/screens/sign_up_screen.dart';
+import 'package:dementia_care/screens/splash_screen.dart'; // Import the SplashScreen widget
 import 'package:dementia_care/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -16,7 +17,7 @@ Future<void> main() async {
   );
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor:Colors.transparent // set status bar color
+    statusBarColor: Colors.transparent, // set status bar color
   ));
 
   runApp(const MyApp());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'MemoryGuard',
       theme: theme(),
-      home: const SignInScreen(),
+      home: SplashScreen(), // Navigate to the SplashScreen widget initially
       routes: {
         '/login': (BuildContext context) => const SignInScreen(),
         '/register': (BuildContext context) => const SignUpScreen(),

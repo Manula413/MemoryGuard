@@ -1,1 +1,1 @@
-enum MenuState { map,upload,register,view,logout}
+enum MenuState { map,upload,register,view,logout, view_patients}

@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    
+
   flutter_svg: ^2.0.9
   intl: ^0.18.1
   geolocator: ^10.1.0
@@ -39,16 +39,16 @@ dev_dependencies:
 flutter_launcher_icons :
   android: "launcher_icon"
   ios: true
-  image_path: assets/images/logo.jpeg
+  image_path: assets/images/logo2.png
   min_sdk_android: 26
 
 
 flutter:
   uses-material-design: true
   assets:
-     - assets/images/
-     - assets/icons/
-     - assets/fonts/
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
   fonts:
     - family: Berlin Sans FB
       fonts:
