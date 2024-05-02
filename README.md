@@ -1,3 +1,3 @@
-# dementia_care
+# MemoryGuard
 
 A new Flutter project.
