@@ -46,11 +46,11 @@ class _PatientsScreenState extends State<PatientsScreen> {
         stream: _patientsRef.where('care', isEqualTo: FirebaseAuth.instance.currentUser?.uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Something went wrong'));
+            return const Center(child: Text('Something went wrong'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           final patients = snapshot.data?.docs ?? [];
@@ -85,11 +85,11 @@ class PatientCard extends StatelessWidget {
       child: ListTile(
         title: Text(
           patient['name'],
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           'Email: ${patient['email']}\nContact: ${patient['contact']}',
-          style: TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.grey),
         ),
         onTap: () {
           Navigator.push(

@@ -47,8 +47,8 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 100),
-              Text(
+              const SizedBox(height: 100),
+              const Text(
                 "MemoryGuard",
                 style: TextStyle(
                   color: Colors.black,
@@ -57,7 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 140),
+              const SizedBox(height: 140),
               Form(
                 key: _formKey,
                 child: Column(
@@ -71,12 +71,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         }
                         return null;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Email',
                         hintText: 'Enter your email',
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       obscureText: true,
                       controller: passwordController,
@@ -86,14 +86,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         }
                         return null;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Password',
                         hintText: 'Enter your password',
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     FormError(errors: errors),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     DefaultButton(
                       text: "Login",
                       press: () async {
@@ -128,14 +128,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                 }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                     content: Text('Error fetching user data'),
                                   ),
                                 );
                               }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text('Error signing in'),
                                 ),
                               );
@@ -154,16 +154,16 @@ class _SignInScreenState extends State<SignInScreen> {
                         }
                       },
                     ),
-                    SizedBox(height: 20),
-                    circular ? CircularProgressIndicator() : SizedBox(),
+                    const SizedBox(height: 20),
+                    circular ? const CircularProgressIndicator() : const SizedBox(),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Don’t have an account? ",
                     style: TextStyle(
                       fontSize: 16,
@@ -173,7 +173,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   GestureDetector(
                     onTap: () =>
                         Navigator.pushNamed(context, '/register'),
-                    child: Text(
+                    child: const Text(
                       "Sign Up",
                       style: TextStyle(
                         fontSize: 16,
@@ -188,11 +188,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ForgotPasswordScreen(),
+                      builder: (context) => const ForgotPasswordScreen(),
                     ),
                   );
                 },
-                child: Text(
+                child: const Text(
                   "Forgot Password?",
                   style: TextStyle(
                     fontSize: 16,

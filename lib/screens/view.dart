@@ -22,7 +22,7 @@ class _ViewScreenState extends State<ViewScreen> {
       .snapshots();
   String _selectedUserName = "";
   List<String> _userNames = [];
-  Map<String, bool> _isImageExpandedMap = {};
+  final Map<String, bool> _isImageExpandedMap = {};
 
   @override
   void initState() {
@@ -138,7 +138,7 @@ class _ViewScreenState extends State<ViewScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.delete),
+                                      icon: const Icon(Icons.delete),
                                       onPressed: () => _deleteImage(document.id),
                                     ),
                                     IconButton(

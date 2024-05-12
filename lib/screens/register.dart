@@ -4,7 +4,6 @@ import 'package:dementia_care/components/snackbar.dart';
 import 'package:dementia_care/helper/enums.dart';
 import 'package:dementia_care/helper/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../components/coustom_bottom_nav_bar.dart';

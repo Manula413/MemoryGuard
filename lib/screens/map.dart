@@ -25,6 +25,7 @@ class _MapState extends State<Map> {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   bool initialLoad = true; // Flag to track initial load
+  int notificationIdCounter = 0;
 
   Future<void> initializeNotifications() async {
     var initializationSettingsAndroid =
@@ -77,8 +78,8 @@ class _MapState extends State<Map> {
 
             if (user['sos']) {
               _scheduleNotification(
-                  user['name'],
-                  'SoS Alert!',
+                  'SOS Alert!',
+                  'Emergency SOS Alert!',
                   "${user['name']} has sent a SOS Alert!");
               _updateSos(user.id); // Changed to use document ID
             }
@@ -125,7 +126,6 @@ class _MapState extends State<Map> {
     });
   }
 
-
   void _triggerSosAlert() {
     _scheduleNotification('SOS Alert!', 'Emergency SOS Alert!',
         'An SOS alert has been triggered.');
@@ -140,7 +140,7 @@ class _MapState extends State<Map> {
     print("Current Location: $lat, $lon");
     print("Original Location: $originalLat, $originalLon");
 
-    double distance = Distance().as(
+    double distance = const Distance().as(
       LengthUnit.Meter,
       LatLng(originalLat, originalLon),
       LatLng(lat, lon),
@@ -156,17 +156,29 @@ class _MapState extends State<Map> {
 
   Future<void> _scheduleNotification(
       String type, String title, String message) async {
-    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-        'your_channel_id', 'your_channel_name',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
+    var priority = type == 'SOS Alert!' ? Priority.max : Priority.high;
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      importance: Importance.max,
+      priority: priority,
+      ticker: 'ticker',
+    );
 
     var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
     );
-    await flutterLocalNotificationsPlugin
-        .show(0, title, message, platformChannelSpecifics);
+
+    // Increment the counter to generate a unique notification ID
+    notificationIdCounter++;
+
+    await flutterLocalNotificationsPlugin.show(
+      notificationIdCounter,
+      title,
+      message,
+      platformChannelSpecifics,
+    );
   }
 
   Future<void> _updateSos(String id) async {
@@ -194,17 +206,22 @@ class _MapState extends State<Map> {
           leading: const BackButton(color: Colors.black),
           backgroundColor: const Color.fromARGB(48, 0, 0, 0),
           centerTitle: true,
-          title: const Text('Map',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Color.fromARGB(255, 0, 0, 0))),
+          title: const Text(
+            'Map',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromARGB(255, 0, 0, 0),
+            ),
+          ),
         ),
       ),
       extendBodyBehindAppBar: true,
       body: FlutterMap(
         options: const MapOptions(
-            initialCenter: LatLng(7.873054, 80.771797), initialZoom: 8),
+          initialCenter: LatLng(7.873054, 80.771797),
+          initialZoom: 8,
+        ),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -212,8 +229,7 @@ class _MapState extends State<Map> {
           MarkerLayer(markers: markers),
         ],
       ),
-      bottomNavigationBar:
-      const CustomBottomNavBar(selectedMenu: MenuState.map),
+      bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.map),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dementia_care/components/form_error.dart';
 import 'package:dementia_care/components/default_button.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -24,17 +23,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Stack(
         children: [
-          Positioned(
+          const Positioned(
             top: 80, // Adjust this value as needed
             left: 0,
             right: 0,
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(20.0),
                 child: Text(
                   "Forgot Password",
                   style: TextStyle(
@@ -69,7 +68,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           hintText: "Enter your email",
                           fillColor: Colors.grey.shade200,
                           filled: true,
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -79,7 +78,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   DefaultButton(
                     text: "Send Reset Email",
                     press: () async {
@@ -91,7 +90,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           await FirebaseAuth.instance
                               .sendPasswordResetEmail(email: emailController.text);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("Password reset email sent successfully"),
                             ),
                           );
@@ -108,8 +107,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       }
                     },
                   ),
-                  SizedBox(height: 20),
-                  circular ? CircularProgressIndicator() : SizedBox(),
+                  const SizedBox(height: 20),
+                  circular ? const CircularProgressIndicator() : const SizedBox(),
                 ],
               ),
             ),

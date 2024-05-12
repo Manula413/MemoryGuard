@@ -33,12 +33,12 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
-        color: Color.fromARGB(232, 250, 250, 250),
+        color: const Color.fromARGB(232, 250, 250, 250),
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, -15),
             blurRadius: 20,
-            color: Color.fromARGB(90, 22, 0, 43).withOpacity(0.08),
+            color: const Color.fromARGB(90, 22, 0, 43).withOpacity(0.08),
           ),
         ],
         borderRadius: const BorderRadius.only(

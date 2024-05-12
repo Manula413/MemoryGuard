@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../components/form_error.dart';
 import '../../screens/forgot_password_screen.dart';
 import '../../../components/default_button.dart';
 import '../../helper/size_config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class KeyboardUtil {
   static void hideKeyboard(BuildContext context) {
@@ -16,33 +17,112 @@ class KeyboardUtil {
 }
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   List<String?> errors = [];
   bool circular = false;
+  bool rememberMe = false;
 
-  void addError({String? error}) {
-    if (!errors.contains(error)) {
-      setState(() {
-        errors.add(error);
-      });
+  @override
+  void initState() {
+    super.initState();
+    // Initialize Shared Preferences
+    initializeSharedPreferences();
+  }
+
+  Future<void> initializeSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      rememberMe = prefs.getBool('rememberMe') ?? false;
+    });
+    if (rememberMe) {
+      checkLoggedInStatus();
     }
   }
 
-  void removeError({String? error}) {
-    if (errors.contains(error)) {
-      setState(() {
-        errors.remove(error);
-      });
+  void checkLoggedInStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    if (isLoggedIn) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+
+      if (userDoc.exists) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        if (userData['role'] == 'taker') {
+          Navigator.pushNamed(context, '/map');
+        } else {
+          Navigator.pushNamed(context, '/user');
+        }
+      } else {
+        snackBar('Error fetching user data.');
+      }
     }
+  }
+
+
+  Future<void> login() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      KeyboardUtil.hideKeyboard(context);
+      errors = [];
+      setState(() {
+        circular = true;
+      });
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+        if (rememberMe) {
+          prefs.setBool('rememberMe', true);
+        }
+        setState(() {
+          circular = false;
+        });
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+          if (userData['role'] == 'taker') {
+            Navigator.pushNamed(context, '/map');
+          } else {
+            Navigator.pushNamed(context, '/user');
+          }
+        } else {
+          snackBar('Error fetching user data.');
+        }
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          circular = false;
+        });
+        if (e.code == 'user-not-found') {
+          snackBar('No User Found for this Email.');
+        } else if (e.code == 'wrong-password') {
+          snackBar('Invalid password.');
+        }
+      }
+    }
+  }
+
+  void snackBar(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -82,56 +162,29 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           FormError(errors: errors),
                           SizedBox(height: getRelativeScreenHeight(10)),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    rememberMe = value ?? false;
+                                  });
+                                },
+                              ),
+                              const Text("Remember Me"),
+                            ],
+                          ),
                           DefaultButton(
                             text: "Login",
-                            press: () async {
-                              if (_formKey.currentState!.validate()) {
-                                _formKey.currentState!.save();
-                                KeyboardUtil.hideKeyboard(context);
-                                errors = [];
-                                setState(() {
-                                  circular = true;
-                                });
-                                try {
-                                  UserCredential userCredential =
-                                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                  );
-                                  setState(() {
-                                    circular = false;
-                                  });
-                                  DocumentSnapshot userDoc =
-                                  await FirebaseFirestore.instance
-                                      .collection('user')
-                                      .doc(userCredential.user!.uid)
-                                      .get();
-
-                                  if (userDoc.exists) {
-                                    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-                                    if (userData['role'] == 'taker') {
-                                      Navigator.pushNamed(context, '/map');
-                                    } else {
-                                      Navigator.pushNamed(context, '/user');
-                                    }
-                                  } else {
-                                    snackBar(scaffoldContext, 'Error fetching user data.');
-                                  }
-                                } on FirebaseAuthException catch (e) {
-                                  setState(() {
-                                    circular = false;
-                                  });
-                                  if (e.code == 'user-not-found') {
-                                    snackBar(scaffoldContext, 'No User Found for this Email.');
-                                  } else if (e.code == 'wrong-password') {
-                                    snackBar(scaffoldContext, 'Invalid password.');
-                                  }
-                                }
-                              }
+                            press: () {
+                              login();
                             },
                           ),
                           const SizedBox(height: 20),
-                          circular ? const CircularProgressIndicator() : const Text(''),
+                          circular
+                              ? const CircularProgressIndicator()
+                              : const Text(''),
                         ],
                       ),
                     ),
@@ -146,12 +199,13 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: const Color.fromARGB(255, 0, 0, 0)),
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/register'),
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/register'),
                           child: Text(
                             "Sign Up",
                             style: TextStyle(
                                 fontSize: getRelativeScreenWidth(16),
-                                color: Color.fromARGB(255, 41, 124, 233)),
+                                color: const Color.fromARGB(255, 41, 124, 233)),
                           ),
                         ),
                       ],
@@ -161,11 +215,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen(),
+                            builder: (context) => const ForgotPasswordScreen(),
                           ),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Forgot Password?",
                         style: TextStyle(
                           fontSize: 16,
@@ -189,7 +243,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: TextFormField(
         obscureText: true,
         style: const TextStyle(color: Color.fromARGB(255, 8, 8, 8)),
-        controller: passwordController,
+        controller: _passwordController,
         validator: (value) {
           if (value!.isEmpty) {
             addError(error: 'Please Enter your password');
@@ -223,7 +277,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: TextFormField(
         style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
         keyboardType: TextInputType.emailAddress,
-        controller: emailController,
+        controller: _emailController,
         validator: (value) {
           if (value!.isEmpty) {
             addError(error: 'Please Enter your email');
@@ -250,9 +304,11 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-
-  void snackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  void addError({String? error}) {
+    if (!errors.contains(error)) {
+      setState(() {
+        errors.add(error);
+      });
+    }
   }
 }

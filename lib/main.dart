@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'MemoryGuard',
       theme: theme(),
-      home: SplashScreen(), // Navigate to the SplashScreen widget initially
+      home: const SplashScreen(), // Navigate to the SplashScreen widget initially
       routes: {
         '/login': (BuildContext context) => const SignInScreen(),
         '/register': (BuildContext context) => const SignUpScreen(),
