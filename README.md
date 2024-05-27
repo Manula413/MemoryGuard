@@ -36,7 +36,7 @@ MemoryGuard is a mobile application designed to assist caretakers of individuals
    git clone https://github.com/your-username/MemoryGuard.git
 
    cd MemoryGuard
-2.**Set up Firebase:**
+2. **Set up Firebase:**
 
 - Follow the official Firebase setup instructions for Flutter.
 - Add the google-services.json file for Android or GoogleService-Info.plist file for iOS in the appropriate directories.
@@ -46,7 +46,7 @@ MemoryGuard is a mobile application designed to assist caretakers of individuals
 ```bash
 flutter pub get
 ```
-4.**Run the application:**
+4. **Run the application:**
 
 ```bash
 
